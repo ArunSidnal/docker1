@@ -19,19 +19,12 @@ stages:
     displayName: Build
     pool:
       vmImage: ubuntu-latest
-    steps:
+    steps:    
     - task: Docker@2
-      displayName: Build an image
       inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        tags: |
-          $(Build.BuildId)
-    - task: Docker@1
-      displayName: Publish an image
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: 'NewDockerConnection'
-        command: 'Push an image'
-        imageName: '$(Build.Repository.Name):$(Build.BuildId)'
+        containerRegistry: 'NewDockerConnection'
+        repository: 'arunsidnal/mywebapp'
+        command: 'build'
+        Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        tags: '$(Build.BuildId)'
         
