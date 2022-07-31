@@ -10,6 +10,9 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
+  webRepository: 'mywebapp'
+  RegistryName: 'arunsidnal'
+  WebAppName: 'arunsMyWebApp'
 
 stages:
 - stage: Build
@@ -34,3 +37,19 @@ stages:
         repository: 'arunsidnal/mywebapp'
         command: 'Push'
         tags: '$(Build.BuildId)'
+- stage: 'Deploy'
+  displayName: 'Deploy the container'
+  dependsOn: Build
+  jobs:
+  - job: 'Deploy'
+    displayName: 'Deploy job'
+    pool:
+      vmImage: 'ubuntu-20.04'
+    variables:
+    - group: Release
+    steps:
+    - task: AzureWebAppContainer@1
+      inputs:
+       appName: $(WebAppName)
+       azureSubscription: 'Free Trial (413ebf87-ac1e-423e-9fce-f78084d4c2d1)'
+       imageName: $(RegistryName)/$(webRepository):$(build.buildId)
